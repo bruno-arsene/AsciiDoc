@@ -1,5 +1,6 @@
 {
-    "name": "Nikoms/AsciiDoc",
+    "name": "nikoms/ascii-doc",
+    "license": "MIT",
     "description": "AsciiDoc: try it, use it, love it!",
     "minimum-stability": "stable",
     "authors": [
