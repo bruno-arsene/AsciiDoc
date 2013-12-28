@@ -61,4 +61,8 @@ Yes!"
         $ascii->fetch();
         $this->assertSame('Ok', $ascii->getCurrent());
     }
+
+    public function testFail(){
+        $this->fail('make it fail!');
+    }
 }
