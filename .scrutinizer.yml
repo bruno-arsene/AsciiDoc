@@ -12,3 +12,5 @@ tools:
     php_loc: true
     php_pdepend: true
     external_code_coverage: true
+before_commands:
+  - "composer install --prefer-source"
