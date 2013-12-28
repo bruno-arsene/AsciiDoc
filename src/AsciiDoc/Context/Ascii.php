@@ -6,7 +6,8 @@
 namespace AsciiDoc\Context;
 
 
-class Ascii implements Contextable{
+class Ascii implements Contextable
+{
 
     private $input;
     private $currentLine;
@@ -18,11 +19,13 @@ class Ascii implements Contextable{
         $this->currentLine = 0;
     }
 
-    public function getCurrent(){
+    public function getCurrent()
+    {
         return $this->input[$this->currentLine];
     }
 
-    public function fetch(){
+    public function fetch()
+    {
         $this->currentLine++;
         return $this->currentLine < count($this->input);
     }

@@ -6,6 +6,7 @@
 namespace AsciiDoc\Headers;
 
 
-class Level1 {
+class Level1
+{
 
 }

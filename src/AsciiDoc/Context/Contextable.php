@@ -6,6 +6,7 @@
 namespace AsciiDoc\Context;
 
 
-interface Contextable{
+interface Contextable
+{
 
 }
