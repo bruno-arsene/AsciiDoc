@@ -1,0 +1,17 @@
+{
+    "name": "Nikoms/AsciiDoc",
+    "description": "AsciiDoc: try it, use it, love it!",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Nicolas De Boose",
+            "email": "nikoms@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
+    },
+    "autoload": {
+        "psr-0": {"AsciiDoc\\": "src/"}
+    }
+}

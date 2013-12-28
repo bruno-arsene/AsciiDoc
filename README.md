@@ -1,4 +1,4 @@
 AsciiDoc
 ========
 
-AsciiDoc: try it use it love it!
+AsciiDoc: try it, use it, love it!
