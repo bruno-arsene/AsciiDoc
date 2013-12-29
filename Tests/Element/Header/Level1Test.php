@@ -26,4 +26,10 @@ class Level1Test extends \PHPUnit_Framework_TestCase
         $level1 = new Level1('Hello<br />world');
         $this->assertSame('<h1>Hello&lt;br /&gt;world</h1>', $level1->toHtml());
     }
+
+    public function testToAscii()
+    {
+        $level1 = new Level1('Hello world');
+        $this->assertSame('==Hello world', $level1->toAscii());
+    }
 }

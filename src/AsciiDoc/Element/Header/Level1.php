@@ -24,4 +24,9 @@ class Level1 implements Element
         return sprintf('<h1>%s</h1>', $this->title);
     }
 
+    public function toAscii()
+    {
+        return sprintf('==%s', $this->title);
+    }
+
 }
