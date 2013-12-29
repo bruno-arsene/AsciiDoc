@@ -30,8 +30,9 @@ class Ascii implements Contextable
         return $this->getCurrent();
     }
 
-    private function getLine($line){
-        if($line >= 0 && $line < count($this->lines)){
+    private function getLine($line)
+    {
+        if ($line >= 0 && $line < count($this->lines)) {
             return $this->lines[$line];
         }
         return false;
