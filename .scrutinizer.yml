@@ -4,7 +4,8 @@ before_commands:
   - "composer install --dev --prefer-source"
 tools:
     php_mess_detector: true
-    php_cs_fixer: true
+    php_cs_fixer:
+        config: { level: psr2 } 
     php_analyzer: true
     php_code_sniffer: true
     sensiolabs_security_checker: true
