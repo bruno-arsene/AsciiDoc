@@ -1,13 +1,11 @@
 <?php
-/**
- * @author Nicolas De Boose
- */
 
 namespace AsciiDoc\Element;
 
 
+use AsciiDoc\Context\FormatterInterface;
+
 interface Element
 {
-    public function toHtml();
-    public function toAscii();
+    public function format(FormatterInterface $formatter);
 }

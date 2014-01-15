@@ -1,12 +1,11 @@
 <?php
-/**
- * @author Nicolas De Boose
- */
 
-namespace AsciiDoc\Context;
+namespace AsciiDoc\Format\Ascii;
 
 
-class Ascii implements Contextable
+use AsciiDoc\Context\DocumentInterface;
+
+class Document implements DocumentInterface
 {
 
     private $lines;
@@ -27,6 +26,7 @@ class Ascii implements Contextable
     public function fetch()
     {
         ++$this->currentLine;
+
         return $this->getCurrent();
     }
 
@@ -35,6 +35,7 @@ class Ascii implements Contextable
         if ($line >= 0 && $line < count($this->lines)) {
             return $this->lines[$line];
         }
+
         return false;
     }
 }

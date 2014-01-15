@@ -1,53 +1,47 @@
 <?php
-/**
- * @author Nicolas De Boose
- */
 
-namespace Tests\Context;
+namespace AsciiDoc\Format\Ascii;
 
-
-use AsciiDoc\Context\Ascii;
-
-class AsciiTest extends \PHPUnit_Framework_TestCase
+class DocumentTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testGetFirstElement()
     {
-        $ascii = new Ascii('Hello world');
+        $ascii = new Document('Hello world');
         $this->assertSame('Hello world', $ascii->fetch());
     }
 
 
     public function testFetchWithoutEol()
     {
-        $ascii = new Ascii("Hello world");
+        $ascii = new Document("Hello world");
         $ascii->fetch();
         $this->assertFalse($ascii->fetch());
     }
 
     public function testFetchOnce()
     {
-        $ascii = new Ascii("Hello world\nOk");
+        $ascii = new Document("Hello world\nOk");
         $this->assertSame('Hello world', $ascii->fetch());
     }
 
     public function testSplitWithBackSlashN()
     {
-        $ascii = new Ascii("Hello world\nYes!");
+        $ascii = new Document("Hello world\nYes!");
         $ascii->fetch();
         $this->assertSame('Yes!', $ascii->fetch());
     }
 
     public function testSplitWithPHPEOL()
     {
-        $ascii = new Ascii("Hello world" . PHP_EOL . "Yes!");
+        $ascii = new Document("Hello world" . PHP_EOL . "Yes!");
         $ascii->fetch();
         $this->assertSame('Yes!', $ascii->fetch());
     }
 
     public function testSplitWithReturn()
     {
-        $ascii = new Ascii(
+        $ascii = new Document(
             "Hello world
 Yes!"
         );
@@ -57,33 +51,36 @@ Yes!"
 
     public function testFetchToLast()
     {
-        $ascii = new Ascii("Hello world\nYes!\nOk");
+        $ascii = new Document("Hello world\nYes!\nOk");
         $ascii->fetch();
         $ascii->fetch();
         $this->assertSame('Ok', $ascii->fetch());
     }
 
-    public function testLinesCount(){
-        $ascii = new Ascii("1\n2\n3\n4\n5");
+    public function testLinesCount()
+    {
+        $ascii = new Document("1\n2\n3\n4\n5");
         $i = 0;
-        while($ascii->fetch() !== false){
+        while ($ascii->fetch() !== false) {
             $i++;
         }
-        $this->assertSame(5,$i);
+        $this->assertSame(5, $i);
     }
 
-    public function testEmptyString(){
-        $ascii = new Ascii("");
-        $this->assertSame('',$ascii->fetch());
-        $this->assertSame(false,$ascii->fetch());
+    public function testEmptyString()
+    {
+        $ascii = new Document("");
+        $this->assertSame('', $ascii->fetch());
+        $this->assertSame(false, $ascii->fetch());
     }
 
-    public function testEmptyLines(){
-        $ascii = new Ascii("\n\n\n\n");
+    public function testEmptyLines()
+    {
+        $ascii = new Document("\n\n\n\n");
         $i = 0;
-        while($ascii->fetch() !== false){
+        while ($ascii->fetch() !== false) {
             $i++;
         }
-        $this->assertSame(5,$i);
+        $this->assertSame(5, $i);
     }
 }
