@@ -143,11 +143,9 @@ class HtmlFormatter extends Formatter{
     {
         return '<h1>' . $level0TwoLine->getTitle() . '</h1>';
     }
-
-
 }
 
-class Doc{
+abstract class Doc{
 
     /**
      * @var Finder[]
@@ -164,7 +162,11 @@ class Doc{
         $this->text = $text;
         $this->store = array();
         $this->finders = array();
+        $this->initFinders();
     }
+
+    abstract protected function initFinders();
+
     public function addFinder(Finder $finder){
         $this->finders[] = $finder;
     }
@@ -201,6 +203,12 @@ class Doc{
 
 }
 
+class AsciiDoc extends Doc{
+    protected function initFinders(){
+        $this->addFinder(new Level0TwoLineAsciiFinder());
+    }
+}
+
 $asciiText = "
 Coucou
 
@@ -220,11 +228,9 @@ Def
 
 ";
 
-$o = new Doc($asciiText);
-$o->addFinder(new Level0TwoLineAsciiFinder());
-$asciiTextShortCut = $o->getShortCutText();
+$o = new AsciiDoc($asciiText);
 
-echo nl2br($asciiTextShortCut).'<hr/>';
+echo nl2br($o->getShortCutText()).'<hr/>';
 
 $htmlFormatter = new HtmlFormatter($o);
 echo $htmlFormatter->convert();
