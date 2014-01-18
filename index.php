@@ -98,10 +98,9 @@ class Level0TwoLineAsciiFinder implements Finder{
         preg_match_all($level0TwoLinesRegex, $text, $matches);
 
         $converts = array();
-        foreach($matches[0] as $id => $match){
-            $converts[] = new ConvertElement($match,new Level0TwoLine($matches[1][$id]));
+        foreach($matches[0] as $id => $asciiTextMatched){
+            $converts[] = new ConvertElement($asciiTextMatched, new Level0TwoLine($matches[1][$id]));
         }
-
         return $converts;
 
     }
@@ -124,11 +123,12 @@ abstract class Formatter{
         return $this->doc;
     }
 
+
     public function convert()
     {
         $convertedText = $this->getDoc()->getShortCutText();
         foreach($this->getDoc()->getStore() as $convertElement){
-            $convertedText = str_replace($convertElement->getText(), $convertElement->getElement()->format($this), $convertedText);
+            $convertedText = preg_replace('#'.preg_quote($convertElement->getText(),'#').'#', $convertElement->getElement()->format($this), $convertedText, 1);
         }
         return $convertedText;
     }
@@ -178,22 +178,24 @@ abstract class Doc{
         $this->shortCutText = $this->text;
         foreach($this->finders as $finder){
             foreach($finder->getFoundMatches($this->shortCutText) as $convert){
-                $storeElement = $this->addToStore($finder->getShortCutName(), $convert->getElement());
-                $this->shortCutText = str_replace($convert->getText(), $storeElement->getText(), $this->shortCutText);
+                $id = $this->addToStore($finder->getShortCutName(), $convert->getElement());
+                $originalText = $convert->getText();
+                $this->shortCutText = preg_replace('#'.preg_quote($originalText,'#').'#', $this->getShortCutTag($finder->getShortCutName(), $id), $this->shortCutText, 1);
             }
         }
         return $this->shortCutText;
     }
 
-    private function getShortCut($shortCutName, $id){
+    private function getShortCutTag($shortCutName, $id){
         return '{{'.$shortCutName.':'.$id.'}}';
     }
 
     private function addToStore($shortCutName, Element $element){
         $id = count($this->store);
-        $convertElement = new ConvertElement($this->getShortCut($shortCutName, $id), $element);
+        $shortCutTag = $this->getShortCutTag($shortCutName, $id);
+        $convertElement = new ConvertElement($shortCutTag, $element);
         $this->store[] = $convertElement;
-        return $convertElement;
+        return $id;
     }
 
     public function getStore(){
@@ -221,6 +223,9 @@ abc
 ==
 
 Abc
+==
+
+Def
 ==
 
 Def
