@@ -40,8 +40,6 @@ class Level0TwoLine implements Element{
     public function getTitle(){
         return $this->title;
     }
-
-
 }
 
 class ConvertElement{
@@ -49,23 +47,23 @@ class ConvertElement{
     /**
      * @var string
      */
-    private $text;
+    private $textFound;
     /**
      * @var Element
      */
     private $element;
 
     /**
-     * @param string $text
+     * @param string $textFound
      * @param Element $element
      */
-    public function __construct($text, Element $element){
-        $this->text = (string) $text;
+    public function __construct($textFound, Element $element){
+        $this->textFound = (string) $textFound;
         $this->element = $element;
     }
 
-    public function getText(){
-        return $this->text;
+    public function getTextFound(){
+        return $this->textFound;
     }
 
     public function getElement(){
@@ -128,7 +126,7 @@ abstract class Formatter{
     {
         $convertedText = $this->getDoc()->getShortCutText();
         foreach($this->getDoc()->getStore() as $convertElement){
-            $convertedText = preg_replace('#'.preg_quote($convertElement->getText(),'#').'#', $convertElement->getElement()->format($this), $convertedText, 1);
+            $convertedText = preg_replace('#'.preg_quote($convertElement->getTextFound(),'#').'#', $convertElement->getElement()->format($this), $convertedText, 1);
         }
         return $convertedText;
     }
@@ -177,10 +175,9 @@ abstract class Doc{
         }
         $this->shortCutText = $this->text;
         foreach($this->finders as $finder){
-            foreach($finder->getFoundMatches($this->shortCutText) as $convert){
-                $id = $this->addToStore($finder->getShortCutName(), $convert->getElement());
-                $originalText = $convert->getText();
-                $this->shortCutText = preg_replace('#'.preg_quote($originalText,'#').'#', $this->getShortCutTag($finder->getShortCutName(), $id), $this->shortCutText, 1);
+            foreach($finder->getFoundMatches($this->shortCutText) as $shortCutElement){
+                $id = $this->addToStore($finder->getShortCutName(), $shortCutElement->getElement());
+                $this->shortCutText = preg_replace('#'.preg_quote($shortCutElement->getTextFound(),'#').'#', $this->getShortCutTag($finder->getShortCutName(), $id), $this->shortCutText, 1);
             }
         }
         return $this->shortCutText;
