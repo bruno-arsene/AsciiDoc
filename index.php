@@ -22,17 +22,24 @@ Level 2 Subsection Title
 
  */
 
-interface Element{
-    public function format(Formatter $formatter);
+/**
+ * Interface Element
+ */
+interface Ham_Element{
+    public function format(Ham_Formatter $formatter);
 }
 
-class Level0TwoLine implements Element{
+/**
+ * Le niveau 0 écrit en 2 lignes dans l'asciidoc
+ * Class Level0TwoLine
+ */
+class Ham_Element_Level0TwoLine implements Ham_Element{
     private $title;
     public function __construct($title){
         $this->title = $title;
     }
 
-    public function format(Formatter $formatter)
+    public function format(Ham_Formatter $formatter)
     {
         return $formatter->level0TwoLine($this);
     }
@@ -42,78 +49,16 @@ class Level0TwoLine implements Element{
     }
 }
 
-class ConvertElement{
-
-    /**
-     * @var string
-     */
-    private $textFound;
-    /**
-     * @var Element
-     */
-    private $element;
-
-    /**
-     * @param string $textFound
-     * @param Element $element
-     */
-    public function __construct($textFound, Element $element){
-        $this->textFound = (string) $textFound;
-        $this->element = $element;
-    }
-
-    public function getTextFound(){
-        return $this->textFound;
-    }
-
-    public function getElement(){
-        return $this->element;
-    }
-}
-
-interface Finder{
-
-    /**
-     * @param string $text
-     * @return ConvertElement[]
-     */
-    public function getFoundMatches($text);
-
-    /**
-     * @return string
-     */
-    public function getShortCutName();
-}
-
-class Level0TwoLineAsciiFinder implements Finder{
-
-    /**
-     * @param string $text
-     * @return ConvertElement[]
-     */
-    public function getFoundMatches($text){
-        $level0TwoLinesRegex = '/([^\n]+)\n([\=]{2,})/m';
-        preg_match_all($level0TwoLinesRegex, $text, $matches);
-
-        $converts = array();
-        foreach($matches[0] as $id => $asciiTextMatched){
-            $converts[] = new ConvertElement($asciiTextMatched, new Level0TwoLine($matches[1][$id]));
-        }
-        return $converts;
-
-    }
-
-    public function getShortCutName(){
-        return 'title';
-    }
-}
-
-
-abstract class Formatter{
+/**
+ * Le formateur qui contiendra tous les formatages pour chaque Element.
+ * Un formateur par "type de document"
+ * Class Formatter
+ */
+abstract class Ham_Formatter{
 
     private $doc;
 
-    public function __construct(Doc $doc){
+    public function __construct(Ham_Doc $doc){
         $this->doc = $doc;
     }
 
@@ -131,26 +76,28 @@ abstract class Formatter{
         return $convertedText;
     }
 
-    abstract public function level0TwoLine(Level0TwoLine $level0TwoLine);
-
-
+    /**
+     * Renvoi le code du niveau 0, sous une certaine forme (en fonction du type de document)
+     * @param Ham_Element_Level0TwoLine $level0TwoLine
+     * @return string
+     */
+    abstract public function level0TwoLine(Ham_Element_Level0TwoLine $level0TwoLine);
 }
 
-class HtmlFormatter extends Formatter{
-    public function level0TwoLine(Level0TwoLine $level0TwoLine)
-    {
-        return '<h1>' . $level0TwoLine->getTitle() . '</h1>';
-    }
-}
-
-abstract class Doc{
+/**
+ * Le document à qui on passe le text
+ * Un document par type
+ * Chaque type de document doit ajouter ses "Finder"
+ * Class Doc
+ */
+abstract class Ham_Doc{
 
     /**
-     * @var Finder[]
+     * @var Ham_Finder[]
      */
     private $finders;
     /**
-     * @var ConvertElement[]
+     * @var Ham_ConvertElement[]
      */
     private $store;
     private $text;
@@ -165,7 +112,7 @@ abstract class Doc{
 
     abstract protected function initFinders();
 
-    public function addFinder(Finder $finder){
+    public function addFinder(Ham_Finder $finder){
         $this->finders[] = $finder;
     }
 
@@ -187,10 +134,10 @@ abstract class Doc{
         return '{{'.$shortCutName.':'.$id.'}}';
     }
 
-    private function addToStore($shortCutName, Element $element){
+    private function addToStore($shortCutName, Ham_Element $element){
         $id = count($this->store);
         $shortCutTag = $this->getShortCutTag($shortCutName, $id);
-        $convertElement = new ConvertElement($shortCutTag, $element);
+        $convertElement = new Ham_ConvertElement($shortCutTag, $element);
         $this->store[] = $convertElement;
         return $id;
     }
@@ -198,15 +145,123 @@ abstract class Doc{
     public function getStore(){
         return $this->store;
     }
-
-
 }
 
-class AsciiDoc extends Doc{
-    protected function initFinders(){
-        $this->addFinder(new Level0TwoLineAsciiFinder());
+/**
+ * Un finder est un objet qui va trouver les "match" du texte sous forme de tableau de "ConvertElement"
+ * Un Finder pour tous les élements de chaque type de document
+ * Interface Finder
+ */
+interface Ham_Finder{
+
+    /**
+     * @param string $text
+     * @return Ham_ConvertElement[]
+     */
+    public function getFoundMatches($text);
+
+    /**
+     * @return string
+     */
+    public function getShortCutName();
+}
+
+/**
+ * Un objet "ConvertElement" possède juste 2 attributs:
+ * Le textFound, c'est le texte qui va être remplacé par...
+ * ... l'élement en question de type Element
+ * Class ConvertElement
+ */
+class Ham_ConvertElement{
+
+    /**
+     * @var string
+     */
+    private $textFound;
+    /**
+     * @var Ham_Element
+     */
+    private $element;
+
+    /**
+     * @param string $textFound
+     * @param Ham_Element $element
+     */
+    public function __construct($textFound, Ham_Element $element){
+        $this->textFound = (string) $textFound;
+        $this->element = $element;
+    }
+
+    public function getTextFound(){
+        return $this->textFound;
+    }
+
+    public function getElement(){
+        return $this->element;
     }
 }
+
+/**
+ * Tous les finder des titres (peu importe le type de document) devront étendre cette classe (plus pratique comme ca on doit pas réécrire getShorCutName)
+ * Class TitleFinder
+ */
+abstract class Finder_Title implements Ham_Finder{
+    public function getShortCutName(){
+        return 'title';
+    }
+}
+
+
+/**************************
+ * TEST EN HTML
+ **************************/
+
+class Html_HtmlFormatter extends Ham_Formatter{
+    public function level0TwoLine(Ham_Element_Level0TwoLine $level0TwoLine)
+    {
+        return '<h1>' . $level0TwoLine->getTitle() . '</h1>';
+    }
+}
+
+/**************************
+ * TEST EN ASCII
+ **************************/
+
+class Ascii_AsciiFormatter extends Ham_Formatter{
+    public function level0TwoLine(Ham_Element_Level0TwoLine $level0TwoLine)
+    {
+        return $level0TwoLine->getTitle() . PHP_EOL . str_repeat("=",strlen($level0TwoLine->getTitle()));
+    }
+}
+class Ascii_AsciiDoc extends Ham_Doc{
+    protected function initFinders(){
+        $this->addFinder(new Ascii_Finder_Level0TwoLineFinder());
+    }
+}
+
+
+class Ascii_Finder_Level0TwoLineFinder extends Finder_Title{
+
+    /**
+     * @param string $text
+     * @return Ham_ConvertElement[]
+     */
+    public function getFoundMatches($text){
+        $level0TwoLinesRegex = '/(.+?)\n([\=]{2,})/m';
+        preg_match_all($level0TwoLinesRegex, $text, $matches);
+
+        $converts = array();
+        foreach($matches[0] as $id => $asciiTextMatched){
+            $converts[] = new Ham_ConvertElement($asciiTextMatched, new Ham_Element_Level0TwoLine($matches[1][$id]));
+        }
+        return $converts;
+    }
+}
+
+
+/**************************
+ * EXEMPLE D'UN TEXTE EN ASCII
+ **************************/
 
 $asciiText = "
 Coucou
@@ -230,9 +285,12 @@ Def
 
 ";
 
-$o = new AsciiDoc($asciiText);
+$o = new Ascii_AsciiDoc($asciiText);
 
 echo nl2br($o->getShortCutText()).'<hr/>';
 
-$htmlFormatter = new HtmlFormatter($o);
+$htmlFormatter = new Html_HtmlFormatter($o);
+echo $htmlFormatter->convert();
+echo '<hr/>';
+$htmlFormatter = new Ascii_AsciiFormatter($o);
 echo $htmlFormatter->convert();
