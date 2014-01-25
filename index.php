@@ -55,27 +55,6 @@ class Ham_Element_Level0TwoLine implements Ham_Element{
  * Class Formatter
  */
 abstract class Ham_Formatter{
-
-    private $doc;
-
-    public function __construct(Ham_Doc $doc){
-        $this->doc = $doc;
-    }
-
-    protected function getDoc(){
-        return $this->doc;
-    }
-
-
-    public function convert()
-    {
-        $convertedText = $this->getDoc()->getShortCutText();
-        foreach($this->getDoc()->getStore() as $convertElement){
-            $convertedText = preg_replace('#'.preg_quote($convertElement->getTextFound(),'#').'#', $convertElement->getElement()->format($this), $convertedText, 1);
-        }
-        return $convertedText;
-    }
-
     /**
      * Renvoi le code du niveau 0, sous une certaine forme (en fonction du type de document)
      * @param Ham_Element_Level0TwoLine $level0TwoLine
@@ -116,6 +95,25 @@ abstract class Ham_Doc{
         $this->finders[] = $finder;
     }
 
+    //TODO
+    public function toGenericDoc(){
+        //Renvoi un document générique qui n'a plus de "shortcut", juste un array d'élement surlequelle on fait une boucle et un tostring avec un formatter
+        //Idéalement on ne devrait pas passer par un document shortcut intermédiaire
+    }
+
+    /**
+     * @param Ham_Formatter $formatter
+     * @return mixed
+     */
+    public function toString(Ham_Formatter $formatter)
+    {
+        $convertedText = $this->getShortCutText();
+        foreach($this->store as $convertElement){
+            $convertedText = preg_replace('#'.preg_quote($convertElement->getTextFound(),'#').'#', $convertElement->getElement()->format($formatter), $convertedText, 1);
+        }
+        return $convertedText;
+    }
+
     public function getShortCutText(){
         if($this->shortCutText !==null){
             return $this->shortCutText;
@@ -142,9 +140,6 @@ abstract class Ham_Doc{
         return $id;
     }
 
-    public function getStore(){
-        return $this->store;
-    }
 }
 
 /**
@@ -289,8 +284,6 @@ $o = new Ascii_AsciiDoc($asciiText);
 
 echo nl2br($o->getShortCutText()).'<hr/>';
 
-$htmlFormatter = new Html_HtmlFormatter($o);
-echo $htmlFormatter->convert();
+echo $o->toString(new Html_HtmlFormatter());
 echo '<hr/>';
-$htmlFormatter = new Ascii_AsciiFormatter($o);
-echo $htmlFormatter->convert();
+echo $o->toString(new Ascii_AsciiFormatter());
