@@ -1,7 +1,7 @@
 {
-    "name": "nikoms/ascii-doc",
+    "name": "nikoms/ham",
     "license": "MIT",
-    "description": "AsciiDoc: try it, use it, love it!",
+    "description": "Ham: try it, use (or eat) it, love it!",
     "minimum-stability": "stable",
     "authors": [
         {
@@ -13,6 +13,6 @@
         "phpunit/phpunit": "3.7.*"
     },
     "autoload": {
-        "psr-0": {"AsciiDoc\\": "src/"}
+        "psr-0": {"Ham\\": "src/"}
     }
 }

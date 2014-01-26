@@ -1,11 +1,11 @@
 <?php
 
-namespace AsciiDoc\Format\Ascii;
+namespace Ham\Ascii;
 
 
-use AsciiDoc\Context\DocumentInterface;
+use Ham\Base\Context\Document;
 
-class Document implements DocumentInterface
+class AsciiDocument implements Document
 {
 
     private $lines;

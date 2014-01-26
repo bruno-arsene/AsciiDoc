@@ -3,7 +3,7 @@
  * @author Nicolas De Boose
  */
 
-namespace AsciiDoc\Element\Title;
+namespace Ham\Base\Element\Title;
 
 
 class Level1Test extends \PHPUnit_Framework_TestCase

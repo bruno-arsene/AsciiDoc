@@ -1,16 +1,15 @@
 <?php
 
-namespace Tests\Format\Ascii;
+namespace Ham\Ascii;
 
 
-use AsciiDoc\Element\Title\Level1;
-use AsciiDoc\Format\Ascii\Formatter;
+use Ham\Base\Element\Title\Level1;
 
 class FormatterTest extends \PHPUnit_Framework_TestCase
 {
 
     private function getFormatter(){
-        return new Formatter();
+        return new AsciiFormatter();
     }
 
     public function testFormatLevel1()

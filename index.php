@@ -76,7 +76,7 @@ abstract class Ham_Doc{
      */
     private $finders;
     /**
-     * @var Ham_ConvertElement[]
+     * @var Ham_Element[]
      */
     private $store;
     private $text;
@@ -108,35 +108,36 @@ abstract class Ham_Doc{
     public function toString(Ham_Formatter $formatter)
     {
         $convertedText = $this->getShortCutText();
-        foreach($this->store as $convertElement){
-            $convertedText = preg_replace('#'.preg_quote($convertElement->getTextFound(),'#').'#', $convertElement->getElement()->format($formatter), $convertedText, 1);
+        foreach($this->store as $id => $element){
+            $convertedText = preg_replace('#'.preg_quote($this->getShortCutTag($id),'#').'#', $element->format($formatter), $convertedText, 1);
         }
         return $convertedText;
     }
 
     public function getShortCutText(){
-        if($this->shortCutText !==null){
-            return $this->shortCutText;
-        }
-        $this->shortCutText = $this->text;
-        foreach($this->finders as $finder){
-            foreach($finder->getFoundMatches($this->shortCutText) as $shortCutElement){
-                $id = $this->addToStore($finder->getShortCutName(), $shortCutElement->getElement());
-                $this->shortCutText = preg_replace('#'.preg_quote($shortCutElement->getTextFound(),'#').'#', $this->getShortCutTag($finder->getShortCutName(), $id), $this->shortCutText, 1);
-            }
+        if($this->shortCutText === null){
+            $this->initShortCutText();
         }
         return $this->shortCutText;
     }
 
-    private function getShortCutTag($shortCutName, $id){
-        return '{{'.$shortCutName.':'.$id.'}}';
+    private function initShortCutText(){
+        $this->shortCutText = $this->text;
+        foreach($this->finders as $finder){
+            foreach($finder->getFoundMatches($this->shortCutText) as $shortCutElement){
+                $id = $this->addToStore($shortCutElement->getElement());
+                $this->shortCutText = preg_replace('#'.preg_quote($shortCutElement->getTextFound(),'#').'#', $this->getShortCutTag($id), $this->shortCutText, 1);
+            }
+        }
     }
 
-    private function addToStore($shortCutName, Ham_Element $element){
+    private function getShortCutTag($id){
+        return '{{%%'.$id.'%%}}';
+    }
+
+    private function addToStore(Ham_Element $element){
         $id = count($this->store);
-        $shortCutTag = $this->getShortCutTag($shortCutName, $id);
-        $convertElement = new Ham_ConvertElement($shortCutTag, $element);
-        $this->store[] = $convertElement;
+        $this->store[] = $element;
         return $id;
     }
 
@@ -154,11 +155,6 @@ interface Ham_Finder{
      * @return Ham_ConvertElement[]
      */
     public function getFoundMatches($text);
-
-    /**
-     * @return string
-     */
-    public function getShortCutName();
 }
 
 /**
@@ -201,9 +197,6 @@ class Ham_ConvertElement{
  * Class TitleFinder
  */
 abstract class Finder_Title implements Ham_Finder{
-    public function getShortCutName(){
-        return 'title';
-    }
 }
 
 
