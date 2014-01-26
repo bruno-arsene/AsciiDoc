@@ -193,12 +193,6 @@ class Ham_ConvertElement{
     }
 }
 
-/**
- * Tous les finder des titres (peu importe le type de document) devront étendre cette classe (plus pratique comme ca on doit pas réécrire getShorCutName)
- * Class TitleFinder
- */
-abstract class Finder_Title implements Ham_Finder{
-}
 
 
 /**************************
@@ -229,7 +223,7 @@ class Ascii_AsciiDoc extends Ham_Doc{
 }
 
 
-class Ascii_Finder_Level0TwoLineFinder extends Finder_Title{
+class Ascii_Finder_Level0TwoLineFinder implements Ham_Finder{
 
     /**
      * @param string $text
