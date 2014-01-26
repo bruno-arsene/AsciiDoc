@@ -82,17 +82,14 @@ abstract class Ham_Doc{
     private $text;
     private $shortCutText;
 
+
+    abstract protected function initFinders();
+
     public function __construct($text){
         $this->text = $text;
         $this->store = array();
         $this->finders = array();
         $this->initFinders();
-    }
-
-    abstract protected function initFinders();
-
-    public function addFinder(Ham_Finder $finder){
-        $this->finders[] = $finder;
     }
 
     //TODO
@@ -114,7 +111,11 @@ abstract class Ham_Doc{
         return $convertedText;
     }
 
-    public function getShortCutText(){
+    protected function addFinder(Ham_Finder $finder){
+        $this->finders[] = $finder;
+    }
+
+    private function getShortCutText(){
         if($this->shortCutText === null){
             $this->initShortCutText();
         }
@@ -274,8 +275,6 @@ Def
 ";
 
 $o = new Ascii_AsciiDoc($asciiText);
-
-echo nl2br($o->getShortCutText()).'<hr/>';
 
 echo $o->toString(new Html_HtmlFormatter());
 echo '<hr/>';
