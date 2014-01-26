@@ -3,6 +3,7 @@
 namespace Ham\Ascii;
 
 
+use Ham\Ascii\Element\Title\Title1Finder;
 use Ham\Base\Context\Document;
 
 class AsciiDocument extends Document
@@ -11,11 +12,12 @@ class AsciiDocument extends Document
     private $lines;
     private $currentLine;
 
-    public function __construct($text)
+    public function __construct($originalText)
     {
-        $normalizedEolText = str_replace("\r\n", "\n", $text);
+        $normalizedEolText = str_replace("\r\n", "\n", $originalText);
         $this->lines = explode("\n", $normalizedEolText);
         $this->currentLine = -1;
+        parent::__construct($normalizedEolText);
     }
 
     public function getCurrent()
@@ -37,5 +39,14 @@ class AsciiDocument extends Document
         }
 
         return false;
+    }
+
+    /**
+     * Call at the end of the constructor
+     * @return void
+     */
+    protected function initFinders()
+    {
+        $this->addFinder(new Title1Finder());
     }
 }

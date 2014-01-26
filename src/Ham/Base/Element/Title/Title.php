@@ -45,6 +45,6 @@ abstract class Title implements Element
     /**
      * @return int
      */
-    abstract protected function getLevel();
+    abstract public function getLevel();
 
 } 

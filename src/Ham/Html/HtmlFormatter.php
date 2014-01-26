@@ -6,13 +6,13 @@
  * Time: 1:04
  */
 
-namespace Ham\Ascii;
+namespace Ham\Html;
 
 
 use Ham\Base\Context\Formatter;
 use Ham\Base\Element\Title\Title;
 
-class AsciiFormatter implements Formatter
+class HtmlFormatter implements Formatter
 {
     /**
      * @param Title $title
@@ -20,7 +20,7 @@ class AsciiFormatter implements Formatter
      */
     public function title(Title $title)
     {
-        return sprintf("%s\n%s", $title->getTitle(), str_repeat("=", strlen($title->getTitle())));
+        return sprintf("<h%d>%s</h%d>", $title->getLevel(), $title->getTitle(), $title->getLevel());
     }
 
 

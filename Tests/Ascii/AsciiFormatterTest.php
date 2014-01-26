@@ -12,10 +12,9 @@ class FormatterTest extends \PHPUnit_Framework_TestCase
         return new AsciiFormatter();
     }
 
-    public function testFormatLevel1()
+    public function testTitle()
     {
-        $title = new Level1("Hello world");
-        $this->assertSame('<h1>Hello world</h1>', $title->format($this->getFormatter()));
+        $this->assertSame("Hello world\n===========", $this->getFormatter()->title(new Level1("Hello world")));
     }
 }
  

@@ -13,7 +13,7 @@ class Level1 extends Title
     /**
      * @return int
      */
-    protected function getLevel()
+    public function getLevel()
     {
         return 1;
     }

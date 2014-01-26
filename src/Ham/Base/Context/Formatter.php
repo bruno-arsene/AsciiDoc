@@ -8,9 +8,8 @@ interface Formatter
 {
 
     /**
-     * @param Title $header
-     * @param int $level
+     * @param Title $title
      * @return string
      */
-    public function title(Title $header, $level);
+    public function title(Title $title);
 } 
