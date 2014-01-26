@@ -5,7 +5,7 @@ namespace Ham\Ascii;
 
 use Ham\Base\Context\Document;
 
-class AsciiDocument implements Document
+class AsciiDocument extends Document
 {
 
     private $lines;

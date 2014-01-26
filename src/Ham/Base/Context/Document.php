@@ -6,7 +6,7 @@
 namespace Ham\Base\Context;
 
 
-interface Document
+abstract class Document
 {
 
 }
