@@ -10,4 +10,6 @@
 AsciiDoc
 ========
 
-AsciiDoc: try it, use it, love it!
+AsciiDoc: try it, use (or eat) it, love it!
+
+Check index.php for a quick example :)

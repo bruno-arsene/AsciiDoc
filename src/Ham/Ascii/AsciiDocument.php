@@ -1,21 +1,23 @@
 <?php
 
-namespace AsciiDoc\Format\Ascii;
+namespace Ham\Ascii;
 
 
-use AsciiDoc\Context\DocumentInterface;
+use Ham\Ascii\Element\Title\Title1Finder;
+use Ham\Base\Context\Document;
 
-class Document implements DocumentInterface
+class AsciiDocument extends Document
 {
 
     private $lines;
     private $currentLine;
 
-    public function __construct($text)
+    public function __construct($originalText)
     {
-        $normalizedEolText = str_replace("\r\n", "\n", $text);
+        $normalizedEolText = str_replace("\r\n", "\n", $originalText);
         $this->lines = explode("\n", $normalizedEolText);
         $this->currentLine = -1;
+        parent::__construct($normalizedEolText);
     }
 
     public function getCurrent()
@@ -37,5 +39,14 @@ class Document implements DocumentInterface
         }
 
         return false;
+    }
+
+    /**
+     * Call at the end of the constructor
+     * @return void
+     */
+    protected function initFinders()
+    {
+        $this->addFinder(new Title1Finder());
     }
 }

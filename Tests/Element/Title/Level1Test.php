@@ -3,11 +3,18 @@
  * @author Nicolas De Boose
  */
 
-namespace AsciiDoc\Element\Title;
+namespace Ham\Base\Element\Title;
 
 
 class Level1Test extends \PHPUnit_Framework_TestCase
 {
+
+    public function testGetLevel()
+    {
+        $level1 = new Level1('');
+        $this->assertSame(1, $level1->getLevel());
+
+    }
 
     public function testTitleEmpty()
     {
